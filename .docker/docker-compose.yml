@@ -21,6 +21,11 @@ services:
     image: 'postgres:15'
     ports:
       - '5432:5432'
+    environment:
+      PGPASSWORD: 'test'
+      POSTGRES_DB: 'test'
+      POSTGRES_USER: 'test'
+      POSTGRES_PASSWORD: 'test'
     networks:
       - rex-clock-network
 
