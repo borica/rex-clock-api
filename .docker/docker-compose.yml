@@ -1,0 +1,32 @@
+version: '3'
+services:
+  rex-clock-api:
+    container_name: rexClockApi
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ../.:/var/www/html
+    ports:
+      - '80:80'
+    networks:
+      - rex-clock-network
+    depends_on:
+      - rex-clock-database
+
+  rex-clock-database:
+    container_name: rexClockDatabase
+    image: 'postgres:15'
+    ports:
+      - '5432:5432'
+    environment:
+      PGPASSWORD: 'test'
+      POSTGRES_DB: 'test'
+      POSTGRES_USER: 'test'
+      POSTGRES_PASSWORD: 'test'
+    networks:
+      - rex-clock-network
+
+networks:
+  rex-clock-network:
+    driver: bridge
