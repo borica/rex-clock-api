@@ -11,6 +11,8 @@ services:
       - '80:80'
     networks:
       - rex-clock-network
+    environment:
+      PHP_IDE_CONFIG: "serverName=localhost"
     depends_on:
       - rex-clock-database
 
@@ -19,11 +21,6 @@ services:
     image: 'postgres:15'
     ports:
       - '5432:5432'
-    environment:
-      PGPASSWORD: 'test'
-      POSTGRES_DB: 'test'
-      POSTGRES_USER: 'test'
-      POSTGRES_PASSWORD: 'test'
     networks:
       - rex-clock-network
 
