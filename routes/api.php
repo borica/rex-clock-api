@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Symfony\Component\HttpFoundation\Response;
@@ -14,11 +15,22 @@ use Symfony\Component\HttpFoundation\Response;
 | be assigned to the "api" middleware group. Make something great!
 |
 */
-
 Route::get('/public', function () {
     return response()->json('Rex-Clock-Api is listening for requests.', Response::HTTP_OK);
 });
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
+});
+
+Route::prefix('/v1')->group(function () {
+    Route::prefix('/user')->group(function () {
+        Route::controller(UserController::class)->group(function () {
+            Route::get('/', 'index');
+            Route::get('/{id}', 'getUserById');
+            Route::post('/', 'create');
+            Route::put('/{id}', 'getById');
+            Route::delete('/{id}', 'destroy');
+        });
+    });
 });
