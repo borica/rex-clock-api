@@ -30,6 +30,7 @@ use Laravel\Passport\Token;
  * @property string|null $remember_token
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
+ * @property Carbon|null $deleted_at
  * @property-read Collection<int, Client> $clients
  * @property-read int|null $clients_count
  * @property-read DatabaseNotificationCollection<int, DatabaseNotification> $notifications
@@ -48,6 +49,10 @@ use Laravel\Passport\Token;
  * @method static Builder|User wherePassword($value)
  * @method static Builder|User whereRememberToken($value)
  * @method static Builder|User whereUpdatedAt($value)
+ * @method static Builder|User onlyTrashed()
+ * @method static Builder|User whereDeletedAt($value)
+ * @method static Builder|User withTrashed()
+ * @method static Builder|User withoutTrashed()
  * @mixin Eloquent
  */
 class User extends Authenticatable
