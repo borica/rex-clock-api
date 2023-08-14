@@ -9,6 +9,12 @@ use Symfony\Component\HttpFoundation\Response;
 
 class UserController extends Controller
 {
+    private const USER_VALIDATION_RULES = [
+        'name' => 'required|string|max:255',
+        'email' => 'required|email|unique:users,email',
+        'password' => 'required|string|min:6',
+    ];
+
     private UserService $userService;
 
     public function __construct(UserService $userService)
@@ -29,30 +35,9 @@ class UserController extends Controller
      * @param Request $request
      * @return JsonResponse
      */
-    public function create(Request $request): JsonResponse
-    {
-        $data = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email',
-            'password' => 'required|string|min:6',
-        ]);
-
-        $user = $this->userService->create($data);
-
-        return response()->json(['status' => 'success', 'data' => $user], Response::HTTP_CREATED);
-    }
-
-    /**
-     * @param Request $request
-     * @return JsonResponse
-     */
     public function store(Request $request): JsonResponse
     {
-        $data = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email',
-            'password' => 'required|string|min:6',
-        ]);
+        $data = $request->validate(self::USER_VALIDATION_RULES);
 
         $user = $this->userService->create($data);
 
@@ -77,11 +62,7 @@ class UserController extends Controller
      */
     public function update(Request $request, $id): JsonResponse
     {
-        $data = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email,' . $id,
-            'password' => 'nullable|string|min:6',
-        ]);
+        $data = $request->validate(self::USER_VALIDATION_RULES);
 
         $user = $this->userService->update($id, $data);
 

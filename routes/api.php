@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -28,7 +29,17 @@ Route::group(['prefix' => '/v1', 'middleware' => ['auth:api']], function () {
         Route::controller(UserController::class)->group(function () {
             Route::get('/', 'index');
             Route::get('/{id}', 'getUserById');
-            Route::post('/', 'create');
+            Route::post('/', 'store');
+            Route::put('/{id}', 'getById');
+            Route::delete('/{id}', 'destroy');
+        });
+    });
+
+    Route::prefix('/company')->group(function () {
+        Route::controller(CompanyController::class)->group(function () {
+            Route::get('/', 'index');
+            Route::get('/{id}', 'getById');
+            Route::post('/', 'store');
             Route::put('/{id}', 'getById');
             Route::delete('/{id}', 'destroy');
         });
