@@ -27,10 +27,8 @@ class AuthController extends Controller
             'password' => 'required|string',
         ]);
 
-        $response = [
-            'token' => $this->authService->login($request->input('email'), $request->input('password'))
-        ];
+        $response = $this->authService->login($request->input('email'), $request->input('password'));
 
-        return response()->json($response, Response::HTTP_OK);
+        return response()->json(["data" => $response], Response::HTTP_OK);
     }
 }

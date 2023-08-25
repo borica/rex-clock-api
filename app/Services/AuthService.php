@@ -2,10 +2,12 @@
 
 namespace App\Services;
 
+use App\Dto\CompanyDto;
+use App\Dto\SessionDto;
+use App\Dto\UserDto;
 use App\Exceptions\ApiException;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
-use Laravel\Passport\PersonalAccessTokenResult;
 use Symfony\Component\HttpFoundation\Response;
 use Throwable;
 
@@ -16,20 +18,38 @@ class AuthService
     /**
      * @param string $email
      * @param string $password
-     * @return string
+     * @return array
      * @throws ApiException
      * @throws Throwable
      */
-    public function login(string $email, string $password): string
+    public function login(string $email, string $password): array
     {
-        $user = User::whereEmail($email)->first();
+        $user = User::whereEmail($email)
+            ->with(['companies'])
+            ->first();
 
         if ($user) {
             $this->checkCredentials($user, $password);
-            return $user->createToken(self::PASSWORD_GRANT_CLIENT_NAME)->accessToken;
+
+            return [
+                "token" => $user->createToken(self::PASSWORD_GRANT_CLIENT_NAME)->accessToken,
+                "session" => $this->buildSession($user)
+            ];
         }
 
         throw new ApiException('User does not exist', Response::HTTP_NOT_FOUND);
+    }
+
+    /**
+     * @param User $user
+     * @return SessionDto
+     */
+    private function buildSession(User $user): SessionDto
+    {
+        return new SessionDto(
+            new UserDto(user: $user->toArray()),
+            new CompanyDto(company: $user->toArray()['companies'][0] ?? [])
+        );
     }
 
     /**
